@@ -19,7 +19,7 @@ export default function Header() {
         {user?.isLoggedIn === true && (
           <div className={styles.headerLeft}>
             <a className={styles.headerA}>Hello, {user.username}</a>
-            <a
+            <Link
               className={styles.headerA}
               href="/api/logout"
               onClick={async (e) => {
@@ -32,7 +32,7 @@ export default function Header() {
               }}
             >
               Logout
-            </a>
+            </Link>
           </div>
         )}
       </div>
