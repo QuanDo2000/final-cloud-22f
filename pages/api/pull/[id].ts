@@ -1,0 +1,19 @@
+import { NextApiRequest, NextApiResponse } from 'next';
+
+export default function pullHandler(req: NextApiRequest, res: NextApiResponse) {
+  const {
+    query: { id },
+    method,
+  } = req;
+
+  switch (method) {
+    case 'GET':
+      const queryResult = await executeQuery(query, values: [id]);
+      const data = JSON.parse(JSON.stringify(queryResult));
+      res.status(200).json({ data })
+      break;
+    default:
+      res.setHeader('Allow', ['GET'])
+      res.status(405).end(`Method ${method} Not Allowed`)
+  }
+}
