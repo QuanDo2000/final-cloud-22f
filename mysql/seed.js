@@ -2,6 +2,8 @@ const fs = require('fs');
 const fastcsv = require('fast-csv');
 const mysql = require('mysql');
 
+require('dotenv').config();
+
 const processData = (filePath, query) => {
   return new Promise((resolve) => {
     console.log('Processing data from ' + filePath + ' ...');
@@ -34,7 +36,7 @@ const insertData = async () => {
   await processData(filePath, query);
   filePath = './400_transactions.csv';
   query =
-    'INSERT INTO transaction(Hshd_num, Basket_num, Date, Product_num, Spend, Units, Store_region, Week_num, Year) VALUES ?';
+    'INSERT INTO transaction(Basket_num, Hshd_num, Date, Product_num, Spend, Units, Store_region, Week_num, Year) VALUES ?';
   await processData(filePath, query);
   filePath = './400_products.csv';
   query =
@@ -72,7 +74,7 @@ const initTables = () => {
   });
 
   createStatement =
-    'CREATE TABLE transaction(Hshd_num INT NOT NULL, Basket_num INT NOT NULL, Date VARCHAR(20), Product_num INT NOT NULL, Spend DECIMAL(5, 2), Units INT, Store_region VARCHAR(20), Week_num INT, Year INT);';
+    'CREATE TABLE transaction(Basket_num INT NOT NULL, Hshd_num INT NOT NULL, Date VARCHAR(20), Product_num INT NOT NULL, Spend DECIMAL(5, 2), Units INT, Store_region VARCHAR(20), Week_num INT, Year INT);';
 
   conn.query(createStatement, (err) => {
     if (err) {
@@ -106,8 +108,8 @@ const initTables = () => {
 
 let conn = mysql.createConnection({
   host: 'cloud-database-server.mysql.database.azure.com',
-  user: 'azureuser',
-  password: 'myPassword9200',
+  user: process.env.DB_USER,
+  password: process.env.DB_PWD,
   database: 'data',
   port: 3306,
   ssl: { ca: fs.readFileSync('DigiCertGlobalRootCA.crt.pem') },
