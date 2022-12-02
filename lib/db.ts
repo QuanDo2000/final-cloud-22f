@@ -5,9 +5,7 @@ const conn = mysql({
   config: {
     host: 'cloud-database-server.mysql.database.azure.com',
     user: process.env.DB_USER,
-    // user: 'root',
     password: process.env.DB_PWD,
-    // password: 'quan',
     database: 'data',
     port: 3306,
     ssl: { ca: fs.readFileSync('./mysql/DigiCertGlobalRootCA.crt.pem') },

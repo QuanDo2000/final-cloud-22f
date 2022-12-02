@@ -3,12 +3,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import useUser from '../lib/useUser';
-import Layout from '../components/Layout';
-import executeQuery from '../lib/db';
+import useUser from '../../lib/useUser';
+import Layout from '../../components/Layout';
+import executeQuery from '../../lib/db';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { GetStaticProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Router from 'next/router';
 
 const columns: GridColDef[] = [
@@ -35,7 +35,12 @@ const columns: GridColDef[] = [
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const query = 'SELECT * FROM data_pull WHERE Hshd_num = ?;';
-  const value = 10;
+  let value;
+  if (context.params && context.params.id) {
+    value = context.params.id;
+  } else {
+    value = 10;
+  }
   const queryResult = await executeQuery({ query, values: [value] });
 
   const rows = JSON.parse(JSON.stringify(queryResult));
@@ -44,6 +49,24 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       rows,
     },
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async (context) => {
+  const query = 'SELECT Hshd_num FROM household;';
+  const queryResult = await executeQuery({ query, values: [] });
+
+  const data = JSON.parse(JSON.stringify(queryResult));
+
+  const paths = data.map((row: { Hshd_num: number }) => ({
+    params: {
+      id: row.Hshd_num.toString(),
+    },
+  }));
+
+  return {
+    paths,
+    fallback: false,
   };
 };
 
