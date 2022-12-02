@@ -42,6 +42,16 @@ const insertData = async () => {
   query =
     'INSERT INTO product(Product_num, Department, Commodity, Brand_type, Natural_organic_flag) VALUES ?';
   await processData(filePath, query);
+  conn.query(
+    'CREATE VIEW data_pull AS SELECT household.Hshd_num, transaction.Basket_num, transaction.Date, transaction.Product_num, product.Department, product.Commodity, transaction.Spend, transaction.Units, transaction.Store_region, transaction.Week_num, transaction.Year, household.Loyalty_flag, household.Age_range, household.Marital_status, household.Income_range, household.Homeowner_desc, household.Hshd_composition, household.Hshd_size, household.Children FROM household, transaction, product WHERE household.Hshd_num = transaction.Hshd_num AND transaction.Product_num = product.Product_num;',
+    (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log('Created data_pull view.');
+    }
+  );
   return;
 };
 
